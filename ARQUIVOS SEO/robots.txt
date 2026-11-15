@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /ADMINISTRA%C3%87%C3%83O/
+Disallow: /ADMINISTRAÇÃO/
+Disallow: /api/
+
+Sitemap: https://tecnicoderefrigeracaosantaluziamg.com.br/ARQUIVOS%20SEO/sitemap.xml

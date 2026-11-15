@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel Administrativo de Leads | Técnico de Refrigeração em Santa Luzia MG</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="../ARQUIVOS%20SEO/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body id="topo">
+    <a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand-logo" href="../index.html">
+          <span class="brand-title">Refrigeração Santa Luzia</span>
+          <span class="brand-subtitle">Área Administrativa Interna</span>
+        </a>
+        <nav class="main-nav" aria-label="Navegação administrativa">
+          <ul>
+            <li><a href="../index.html">Voltar ao site público</a></li>
+            <li><a href="../INSTITUCIONAL/contato.html">Página de contato</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="conteudo-principal" class="admin-shell">
+      <div class="container">
+        <!-- Tela de Login Simples -->
+        <section id="admin-login-section" class="admin-login-box" aria-labelledby="titulo-login-admin">
+          <h1 id="titulo-login-admin">Acesso Administrativo</h1>
+          <p>Digite a senha de administrador para acessar as solicitações de orçamento e métricas do site.</p>
+
+          <form id="admin-login-form" novalidate>
+            <div class="form-field" style="margin-bottom: 16px;">
+              <label for="admin-password">Senha de acesso</label>
+              <input
+                id="admin-password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                placeholder="Digite a senha"
+              />
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-whatsapp" id="btn-admin-login">Entrar no painel</button>
+            </div>
+
+            <div id="admin-login-feedback" class="form-feedback" role="alert"></div>
+          </form>
+        </section>
+
+        <!-- Dashboard Autenticado -->
+        <section id="admin-dashboard-section" hidden aria-labelledby="titulo-dashboard-admin">
+          <div class="admin-topbar">
+            <div>
+              <h1 id="titulo-dashboard-admin" style="margin: 0 0 4px; font-size: 1.7rem;">Painel de Leads e Métricas</h1>
+              <p style="margin: 0; color: #4b5563;">Acompanhamento de orçamentos recebidos, cliques no WhatsApp e desempenho por página.</p>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+              <button type="button" class="btn btn-light btn-sm" id="btn-refresh-dashboard">Atualizar dados</button>
+              <button type="button" class="btn btn-whatsapp btn-sm" id="btn-export-csv">Exportar CSV</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-admin-logout">Sair</button>
+            </div>
+          </div>
+
+          <div id="admin-mode-notice" class="form-feedback" role="status"></div>
+          <div id="admin-action-feedback" class="form-feedback" role="status"></div>
+
+          <!-- Métricas Principais -->
+          <div class="metrics-grid" aria-label="Resumo de métricas">
+            <article class="metric-card">
+              <span class="metric-label">Total de orçamentos</span>
+              <strong class="metric-value" id="metric-total-leads">0</strong>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Cliques no WhatsApp</span>
+              <strong class="metric-value" id="metric-whatsapp-clicks">0</strong>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Formulários iniciados</span>
+              <strong class="metric-value" id="metric-form-starts">0</strong>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Formulários enviados</span>
+              <strong class="metric-value" id="metric-form-submits">0</strong>
+            </article>
+          </div>
+
+          <!-- Filtros -->
+          <section aria-labelledby="titulo-filtros">
+            <h2 id="titulo-filtros" style="font-size: 1.2rem; margin: 0 0 12px;">Filtrar solicitações de orçamento</h2>
+            <form id="admin-filters-form" class="filter-bar">
+              <div class="form-field">
+                <label for="filter-date-from">Data inicial</label>
+                <input type="date" id="filter-date-from" name="dateFrom" />
+              </div>
+              <div class="form-field">
+                <label for="filter-date-to">Data final</label>
+                <input type="date" id="filter-date-to" name="dateTo" />
+              </div>
+              <div class="form-field">
+                <label for="filter-neighborhood">Bairro</label>
+                <select id="filter-neighborhood" name="neighborhood">
+                  <option value="">Todos os bairros</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="filter-service">Serviço</label>
+                <select id="filter-service" name="service">
+                  <option value="">Todos os serviços</option>
+                </select>
+              </div>
+              <div class="form-field" style="flex-direction: row; gap: 8px;">
+                <button type="submit" class="btn btn-whatsapp btn-sm">Filtrar</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-filters">Limpar</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Tabela de Leads -->
+          <section aria-labelledby="titulo-lista-leads">
+            <h2 id="titulo-lista-leads" style="font-size: 1.25rem; margin: 0 0 12px;">Solicitações de orçamento registradas</h2>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Data e hora</th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Bairro</th>
+                    <th>Equipamento</th>
+                    <th>Serviço</th>
+                    <th>Página de origem</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="leads-table-body">
+                  <tr>
+                    <td colspan="8">Carregando registros...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Desempenho por Página -->
+          <section aria-labelledby="titulo-desempenho-paginas">
+            <h2 id="titulo-desempenho-paginas" style="font-size: 1.25rem; margin: 0 0 12px;">Cliques e formulários por página</h2>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Página de origem</th>
+                    <th>Cliques no WhatsApp</th>
+                    <th>Formulários iniciados</th>
+                    <th>Formulários enviados</th>
+                  </tr>
+                </thead>
+                <tbody id="pages-table-body">
+                  <tr>
+                    <td colspan="4">Nenhum evento registrado ainda.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <!-- Modal de Detalhes do Lead -->
+    <div id="lead-detail-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-lead-title">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="modal-lead-title" style="margin: 0; font-size: 1.25rem;">Detalhes da solicitação</h2>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-close-modal">Fechar</button>
+        </div>
+        <div class="detail-list" id="lead-detail-content"></div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container footer-bottom" style="border-top: none; padding-top: 0;">
+        <span>Painel administrativo privado — Técnico de Refrigeração em Santa Luzia MG</span>
+        <a class="back-to-top" href="#topo">Voltar ao topo</a>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var SESSION_STORAGE_KEY = "rsl_admin_bearer";
+        var LOCAL_AUTH_KEY = "rsl_local_admin_auth";
+        var LOCAL_LEADS_KEY = "rsl_local_leads";
+        var LOCAL_EVENTS_KEY = "rsl_local_events";
+        var API_BASE_STORAGE_KEY = "rsl_api_base";
+        var EXPECTED_DIGEST = "425d61997bf9249a378f324165669789330dc80ea3215486b0f02b1ed1750796";
+
+        var inMemoryToken = "";
+        var usingLocalMode = false;
+
+        function sha256Ascii(ascii) {
+          function rightRotate(value, amount) {
+            return (value >>> amount) | (value << (32 - amount));
+          }
+          var mathPow = Math.pow;
+          var maxWord = mathPow(2, 32);
+          var i, j;
+          var result = "";
+          var words = [];
+          var asciiBitLength = ascii.length * 8;
+          var hash = (sha256Ascii.h = sha256Ascii.h || []);
+          var k = (sha256Ascii.k = sha256Ascii.k || []);
+          var primeCounter = k.length;
+          var isComposite = {};
+          for (var candidate = 2; primeCounter < 64; candidate++) {
+            if (!isComposite[candidate]) {
+              for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+              hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+              k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+            }
+          }
+          ascii += "\x80";
+          while ((ascii.length % 64) - 56) ascii += "\x00";
+          for (i = 0; i < ascii.length; i++) {
+            j = ascii.charCodeAt(i);
+            if (j >> 8) return "";
+            words[i >> 2] |= j << (((3 - i) % 4) * 8);
+          }
+          words[words.length] = (asciiBitLength / maxWord) | 0;
+          words[words.length] = asciiBitLength;
+          for (j = 0; j < words.length; ) {
+            var w = words.slice(j, (j += 16));
+            var oldHash = hash;
+            hash = hash.slice(0, 8);
+            for (i = 0; i < 64; i++) {
+              var w15 = w[i - 15], w2 = w[i - 2];
+              var a = hash[0], e = hash[4];
+              var temp1 =
+                hash[7] +
+                (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) +
+                ((e & hash[5]) ^ (~e & hash[6])) +
+                k[i] +
+                (w[i] =
+                  i < 16
+                    ? w[i]
+                    : (w[i - 16] +
+                        (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) +
+                        w[i - 7] +
+                        (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) |
+                      0);
+              var temp2 =
+                (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) +
+                ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+              hash = [(temp1 + temp2) | 0].concat(hash);
+              hash[4] = (hash[4] + temp1) | 0;
+            }
+            for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+          }
+          for (i = 0; i < 8; i++) {
+            for (j = 3; j + 1; j--) {
+              var b = (hash[i] >> (j * 8)) & 255;
+              result += (b < 16 ? 0 : "") + b.toString(16);
+            }
+          }
+          return result;
+        }
+
+        function sha256Utf8(str) {
+          return sha256Ascii(unescape(encodeURIComponent(str)));
+        }
+
+        function getApiBase() {
+          if (typeof window.REFRIGERACAO_API_BASE === "string" && window.REFRIGERACAO_API_BASE.trim()) {
+            return window.REFRIGERACAO_API_BASE.trim().replace(/\/+$/, "");
+          }
+          var meta = document.querySelector('meta[name="api-base"]');
+          if (meta && meta.getAttribute("content")) {
+            return meta.getAttribute("content").trim().replace(/\/+$/, "");
+          }
+          try {
+            var saved = localStorage.getItem(API_BASE_STORAGE_KEY);
+            if (saved && saved.trim()) {
+              return saved.trim().replace(/\/+$/, "");
+            }
+          } catch (_e) {}
+          return "";
+        }
+
+        function getStoredToken() {
+          if (inMemoryToken) return inMemoryToken;
+          try {
+            return sessionStorage.getItem(SESSION_STORAGE_KEY) || "";
+          } catch (_e) {
+            return "";
+          }
+        }
+
+        function setStoredToken(token) {
+          inMemoryToken = token || "";
+          try {
+            if (token) sessionStorage.setItem(SESSION_STORAGE_KEY, token);
+            else sessionStorage.removeItem(SESSION_STORAGE_KEY);
+          } catch (_e) {}
+        }
+
+        function isLocalAuthActive() {
+          try {
+            return sessionStorage.getItem(LOCAL_AUTH_KEY) === "1";
+          } catch (_e) {
+            return usingLocalMode;
+          }
+        }
+
+        function setLocalAuthActive(active) {
+          usingLocalMode = active;
+          try {
+            if (active) sessionStorage.setItem(LOCAL_AUTH_KEY, "1");
+            else sessionStorage.removeItem(LOCAL_AUTH_KEY);
+          } catch (_e) {}
+        }
+
+        function authHeaders(extra) {
+          var headers = extra ? Object.assign({}, extra) : {};
+          var token = getStoredToken();
+          if (token) headers["Authorization"] = "Bearer " + token;
+          return headers;
+        }
+
+        var apiBase = getApiBase();
+        var loginSection = document.getElementById("admin-login-section");
+        var dashboardSection = document.getElementById("admin-dashboard-section");
+        var loginForm = document.getElementById("admin-login-form");
+        var passwordInput = document.getElementById("admin-password");
+        var loginFeedback = document.getElementById("admin-login-feedback");
+        var modeNotice = document.getElementById("admin-mode-notice");
+        var actionFeedback = document.getElementById("admin-action-feedback");
+
+        var metricTotalLeads = document.getElementById("metric-total-leads");
+        var metricWaClicks = document.getElementById("metric-whatsapp-clicks");
+        var metricFormStarts = document.getElementById("metric-form-starts");
+        var metricFormSubmits = document.getElementById("metric-form-submits");
+
+        var leadsTableBody = document.getElementById("leads-table-body");
+        var pagesTableBody = document.getElementById("pages-table-body");
+        var filtersForm = document.getElementById("admin-filters-form");
+        var filterDateFrom = document.getElementById("filter-date-from");
+        var filterDateTo = document.getElementById("filter-date-to");
+        var filterNeighborhood = document.getElementById("filter-neighborhood");
+        var filterService = document.getElementById("filter-service");
+
+        var modal = document.getElementById("lead-detail-modal");
+        var modalContent = document.getElementById("lead-detail-content");
+        var closeModalBtn = document.getElementById("btn-close-modal");
+
+        var currentLeads = [];
+        var pendingDeleteId = null;
+
+        function setFeedback(el, type, text) {
+          if (!el) return;
+          if (!text) {
+            el.className = "form-feedback";
+            el.textContent = "";
+            return;
+          }
+          el.className = "form-feedback is-visible " + type;
+          el.textContent = text;
+        }
+
+        function escapeHtml(value) {
+          return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        }
+
+        function formatDateBr(iso) {
+          if (!iso) return "-";
+          try {
+            return new Date(iso).toLocaleString("pt-BR", {
+              dateStyle: "short",
+              timeStyle: "short"
+            });
+          } catch (_e) {
+            return iso;
+          }
+        }
+
+        function readLocalList(key) {
+          try {
+            var raw = localStorage.getItem(key);
+            var parsed = raw ? JSON.parse(raw) : [];
+            return Array.isArray(parsed) ? parsed : [];
+          } catch (_e) {
+            return [];
+          }
+        }
+
+        function writeLocalList(key, list) {
+          try {
+            localStorage.setItem(key, JSON.stringify(list));
+          } catch (_e) {}
+        }
+
+        function buildFilterQuery() {
+          var params = new URLSearchParams();
+          if (filterDateFrom.value) params.set("dateFrom", filterDateFrom.value);
+          if (filterDateTo.value) params.set("dateTo", filterDateTo.value);
+          if (filterNeighborhood.value) params.set("neighborhood", filterNeighborhood.value);
+          if (filterService.value) params.set("service", filterService.value);
+          var qs = params.toString();
+          return qs ? "?" + qs : "";
+        }
+
+        function populateFilterOptions(facets) {
+          if (!facets) return;
+          var prevN = filterNeighborhood.value;
+          var prevS = filterService.value;
+
+          filterNeighborhood.innerHTML = '<option value="">Todos os bairros</option>';
+          (facets.neighborhoods || []).forEach(function (n) {
+            var opt = document.createElement("option");
+            opt.value = n;
+            opt.textContent = n;
+            filterNeighborhood.appendChild(opt);
+          });
+          filterNeighborhood.value = prevN;
+
+          filterService.innerHTML = '<option value="">Todos os serviços</option>';
+          (facets.services || []).forEach(function (s) {
+            var opt = document.createElement("option");
+            opt.value = s;
+            opt.textContent = s;
+            filterService.appendChild(opt);
+          });
+          filterService.value = prevS;
+        }
+
+        function renderLeads(leads) {
+          currentLeads = leads || [];
+          if (!currentLeads.length) {
+            leadsTableBody.innerHTML = '<tr><td colspan="8">Nenhuma solicitação encontrada para os critérios selecionados.</td></tr>';
+            return;
+          }
+
+          leadsTableBody.innerHTML = currentLeads
+            .map(function (lead) {
+              var isConfirming = pendingDeleteId === lead.id;
+              return (
+                "<tr>" +
+                "<td>" + escapeHtml(formatDateBr(lead.createdAt)) + "</td>" +
+                "<td><strong>" + escapeHtml(lead.name) + "</strong></td>" +
+                "<td>" + escapeHtml(lead.phone) + "</td>" +
+                "<td>" + escapeHtml(lead.neighborhood) + "</td>" +
+                "<td><span class=\"badge-tag\">" + escapeHtml(lead.equipment) + "</span></td>" +
+                "<td>" + escapeHtml(lead.service) + "</td>" +
+                "<td>" + escapeHtml(lead.pagePath || "/") + "</td>" +
+                "<td style=\"white-space: nowrap;\">" +
+                '<button type="button" class="btn btn-light btn-sm" data-view-lead="' + escapeHtml(lead.id) + '">Ver detalhes</button> ' +
+                (isConfirming
+                  ? '<button type="button" class="btn btn-danger btn-sm" data-confirm-delete="' + escapeHtml(lead.id) + '">Confirmar exclusão</button> ' +
+                    '<button type="button" class="btn btn-secondary btn-sm" data-cancel-delete="1">Cancelar</button>'
+                  : '<button type="button" class="btn btn-secondary btn-sm" data-delete-lead="' + escapeHtml(lead.id) + '">Excluir</button>') +
+                "</td>" +
+                "</tr>"
+              );
+            })
+            .join("");
+        }
+
+        function renderPageMetrics(pages) {
+          if (!pages || !pages.length) {
+            pagesTableBody.innerHTML = '<tr><td colspan="4">Nenhum evento registrado até o momento.</td></tr>';
+            return;
+          }
+
+          pagesTableBody.innerHTML = pages
+            .map(function (row) {
+              return (
+                "<tr>" +
+                "<td>" + escapeHtml(row.pagePath) + "</td>" +
+                "<td>" + escapeHtml(row.whatsappClicks) + "</td>" +
+                "<td>" + escapeHtml(row.formStarts) + "</td>" +
+                "<td>" + escapeHtml(row.formSubmits) + "</td>" +
+                "</tr>"
+              );
+            })
+            .join("");
+        }
+
+        function applyDashboardData(data, localMode) {
+          loginSection.hidden = true;
+          dashboardSection.hidden = false;
+          setFeedback(loginFeedback, "", "");
+
+          if (localMode) {
+            setFeedback(
+              modeNotice,
+              "is-warn",
+              "Modo navegador local ativo (sem servidor backend conectado): exibindo os orçamentos e cliques salvos neste navegador. Para centralizar leads de todos os visitantes, execute o servidor da pasta backend-nodejs."
+            );
+          } else {
+            setFeedback(modeNotice, "", "");
+          }
+
+          var totals = data.totals || {};
+          metricTotalLeads.textContent = String(totals.totalLeads || 0);
+          metricWaClicks.textContent = String(totals.whatsappClicks || 0);
+          metricFormStarts.textContent = String(totals.formStarts || 0);
+          metricFormSubmits.textContent = String(totals.formSubmits || 0);
+
+          populateFilterOptions(data.facets);
+          renderLeads(data.leads || []);
+          renderPageMetrics(data.byPage || []);
+        }
+
+        function buildLocalDashboardData() {
+          var allLeads = readLocalList(LOCAL_LEADS_KEY);
+          var allEvents = readLocalList(LOCAL_EVENTS_KEY);
+          var dFrom = filterDateFrom.value || "";
+          var dTo = filterDateTo.value || "";
+          var nbFilter = filterNeighborhood.value || "";
+          var svFilter = filterService.value || "";
+
+          var filtered = allLeads
+            .filter(function (lead) {
+              var day = String(lead.createdAt || "").slice(0, 10);
+              if (dFrom && day < dFrom) return false;
+              if (dTo && day > dTo) return false;
+              if (nbFilter && lead.neighborhood !== nbFilter) return false;
+              if (svFilter && lead.service !== svFilter) return false;
+              return true;
+            })
+            .sort(function (a, b) {
+              return a.createdAt < b.createdAt ? 1 : -1;
+            });
+
+          var waClicks = 0;
+          var formStarts = 0;
+          var formSubmits = 0;
+          var pageMap = {};
+
+          allEvents.forEach(function (ev) {
+            var key = ev.pagePath || "/";
+            if (!pageMap[key]) {
+              pageMap[key] = { pagePath: key, whatsappClicks: 0, formStarts: 0, formSubmits: 0 };
+            }
+            if (ev.eventType === "whatsapp_click") {
+              waClicks += 1;
+              pageMap[key].whatsappClicks += 1;
+            } else if (ev.eventType === "form_start") {
+              formStarts += 1;
+              pageMap[key].formStarts += 1;
+            } else if (ev.eventType === "form_submit") {
+              formSubmits += 1;
+              pageMap[key].formSubmits += 1;
+            }
+          });
+
+          var nbSet = {};
+          var svSet = {};
+          allLeads.forEach(function (l) {
+            if (l.neighborhood) nbSet[l.neighborhood] = true;
+            if (l.service) svSet[l.service] = true;
+          });
+
+          var byPage = Object.keys(pageMap)
+            .map(function (k) {
+              return pageMap[k];
+            })
+            .sort(function (a, b) {
+              return b.whatsappClicks + b.formSubmits + b.formStarts - (a.whatsappClicks + a.formSubmits + a.formStarts);
+            });
+
+          return {
+            totals: {
+              totalLeads: allLeads.length,
+              whatsappClicks: waClicks,
+              formStarts: formStarts,
+              formSubmits: formSubmits
+            },
+            facets: {
+              neighborhoods: Object.keys(nbSet).sort(),
+              services: Object.keys(svSet).sort()
+            },
+            leads: filtered,
+            byPage: byPage
+          };
+        }
+
+        function loadDashboard() {
+          if (window.location.protocol === "file:" && !apiBase) {
+            if (isLocalAuthActive()) {
+              applyDashboardData(buildLocalDashboardData(), true);
+            } else {
+              loginSection.hidden = false;
+              dashboardSection.hidden = true;
+            }
+            return;
+          }
+
+          fetch(apiBase + "/api/admin/dashboard" + buildFilterQuery(), {
+            credentials: "same-origin",
+            headers: authHeaders()
+          })
+            .then(function (res) {
+              if (res.status === 401) {
+                setStoredToken("");
+                setLocalAuthActive(false);
+                loginSection.hidden = false;
+                dashboardSection.hidden = true;
+                return null;
+              }
+              if (!res.ok) {
+                throw new Error("SERVER_UNAVAILABLE");
+              }
+              return res.json();
+            })
+            .then(function (data) {
+              if (!data) return;
+              setLocalAuthActive(false);
+              applyDashboardData(data, false);
+            })
+            .catch(function () {
+              if (isLocalAuthActive()) {
+                applyDashboardData(buildLocalDashboardData(), true);
+              } else {
+                loginSection.hidden = false;
+                dashboardSection.hidden = true;
+              }
+            });
+        }
+
+        function tryLocalLogin(pwd) {
+          if (sha256Utf8(pwd) === EXPECTED_DIGEST) {
+            passwordInput.value = "";
+            setLocalAuthActive(true);
+            setFeedback(loginFeedback, "", "");
+            applyDashboardData(buildLocalDashboardData(), true);
+            return;
+          }
+          setFeedback(loginFeedback, "is-error", "Senha incorreta. Tente novamente.");
+        }
+
+        loginForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          var pwd = passwordInput.value.trim();
+          if (!pwd) {
+            setFeedback(loginFeedback, "is-error", "Informe a senha de acesso.");
+            passwordInput.focus();
+            return;
+          }
+
+          if (window.location.protocol === "file:" && !apiBase) {
+            tryLocalLogin(pwd);
+            return;
+          }
+
+          fetch(apiBase + "/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ password: pwd })
+          })
+            .then(function (res) {
+              return res.json().catch(function () {
+                return {};
+              }).then(function (body) {
+                if (res.status === 401) {
+                  throw new Error("INVALID_PASSWORD");
+                }
+                if (!res.ok) {
+                  throw new Error("SERVER_UNAVAILABLE");
+                }
+                return body;
+              });
+            })
+            .then(function (body) {
+              if (body && body.token) {
+                setStoredToken(body.token);
+              }
+              setLocalAuthActive(false);
+              passwordInput.value = "";
+              setFeedback(loginFeedback, "", "");
+              loadDashboard();
+            })
+            .catch(function (err) {
+              if (err && err.message === "INVALID_PASSWORD") {
+                setFeedback(loginFeedback, "is-error", "Senha incorreta. Tente novamente.");
+                return;
+              }
+              tryLocalLogin(pwd);
+            });
+        });
+
+        filtersForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          loadDashboard();
+        });
+
+        document.getElementById("btn-clear-filters").addEventListener("click", function () {
+          filterDateFrom.value = "";
+          filterDateTo.value = "";
+          filterNeighborhood.value = "";
+          filterService.value = "";
+          loadDashboard();
+        });
+
+        document.getElementById("btn-refresh-dashboard").addEventListener("click", function () {
+          loadDashboard();
+        });
+
+        function escapeCsvCell(val) {
+          return '"' + String(val || "").replace(/\r?\n/g, " ").replace(/"/g, '""') + '"';
+        }
+
+        function exportLocalCsv() {
+          var rowsData = buildLocalDashboardData().leads;
+          var header = ["ID", "Data e Hora", "Nome", "Telefone", "Bairro", "Equipamento", "Servico", "Mensagem", "Pagina de Origem"]
+            .map(escapeCsvCell)
+            .join(";");
+          var rows = rowsData.map(function (l) {
+            return [l.id, l.createdAt, l.name, l.phone, l.neighborhood, l.equipment, l.service, l.message, l.pagePath]
+              .map(escapeCsvCell)
+              .join(";");
+          });
+          var blob = new Blob(["\uFEFF" + [header].concat(rows).join("\r\n")], { type: "text/csv;charset=utf-8;" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "leads-santa-luzia.csv";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        }
+
+        document.getElementById("btn-export-csv").addEventListener("click", function () {
+          if (usingLocalMode) {
+            exportLocalCsv();
+            return;
+          }
+          fetch(apiBase + "/api/admin/export.csv" + buildFilterQuery(), {
+            credentials: "same-origin",
+            headers: authHeaders()
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error("Não foi possível exportar o CSV.");
+              return res.blob();
+            })
+            .then(function (blob) {
+              var url = URL.createObjectURL(blob);
+              var a = document.createElement("a");
+              a.href = url;
+              a.download = "leads-santa-luzia.csv";
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              URL.revokeObjectURL(url);
+            })
+            .catch(function (err) {
+              setFeedback(actionFeedback, "is-error", err.message || "Erro ao exportar CSV.");
+            });
+        });
+
+        document.getElementById("btn-admin-logout").addEventListener("click", function () {
+          if (usingLocalMode) {
+            setLocalAuthActive(false);
+            loginSection.hidden = false;
+            dashboardSection.hidden = true;
+            setFeedback(actionFeedback, "", "");
+            return;
+          }
+          fetch(apiBase + "/api/admin/logout", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: authHeaders()
+          }).finally(function () {
+            setStoredToken("");
+            setLocalAuthActive(false);
+            loginSection.hidden = false;
+            dashboardSection.hidden = true;
+            setFeedback(actionFeedback, "", "");
+          });
+        });
+
+        leadsTableBody.addEventListener("click", function (event) {
+          var target = event.target;
+          if (!target) return;
+
+          var viewId = target.getAttribute("data-view-lead");
+          if (viewId) {
+            var lead = currentLeads.find(function (item) {
+              return item.id === viewId;
+            });
+            if (lead) {
+              modalContent.innerHTML =
+                '<div class="detail-row"><strong>Data e hora</strong><span>' + escapeHtml(formatDateBr(lead.createdAt)) + "</span></div>" +
+                '<div class="detail-row"><strong>Nome</strong><span>' + escapeHtml(lead.name) + "</span></div>" +
+                '<div class="detail-row"><strong>Telefone</strong><span>' + escapeHtml(lead.phone) + "</span></div>" +
+                '<div class="detail-row"><strong>Bairro</strong><span>' + escapeHtml(lead.neighborhood) + "</span></div>" +
+                '<div class="detail-row"><strong>Equipamento</strong><span>' + escapeHtml(lead.equipment) + "</span></div>" +
+                '<div class="detail-row"><strong>Serviço desejado</strong><span>' + escapeHtml(lead.service) + "</span></div>" +
+                '<div class="detail-row"><strong>Página de origem</strong><span>' + escapeHtml(lead.pagePath || "/") + "</span></div>" +
+                '<div class="detail-row"><strong>Descrição do problema</strong><p style="margin: 4px 0 0;">' + escapeHtml(lead.message) + "</p></div>";
+              modal.classList.add("is-open");
+            }
+            return;
+          }
+
+          var deleteId = target.getAttribute("data-delete-lead");
+          if (deleteId) {
+            pendingDeleteId = deleteId;
+            renderLeads(currentLeads);
+            return;
+          }
+
+          if (target.getAttribute("data-cancel-delete")) {
+            pendingDeleteId = null;
+            renderLeads(currentLeads);
+            return;
+          }
+
+          var confirmId = target.getAttribute("data-confirm-delete");
+          if (confirmId) {
+            if (usingLocalMode) {
+              var remaining = readLocalList(LOCAL_LEADS_KEY).filter(function (item) {
+                return item.id !== confirmId;
+              });
+              writeLocalList(LOCAL_LEADS_KEY, remaining);
+              pendingDeleteId = null;
+              setFeedback(actionFeedback, "is-success", "Solicitação removida com sucesso.");
+              loadDashboard();
+              return;
+            }
+            fetch(apiBase + "/api/admin/leads/" + encodeURIComponent(confirmId), {
+              method: "DELETE",
+              credentials: "same-origin",
+              headers: authHeaders()
+            })
+              .then(function (res) {
+                if (!res.ok) throw new Error("Erro ao excluir registro.");
+                pendingDeleteId = null;
+                setFeedback(actionFeedback, "is-success", "Solicitação removida com sucesso.");
+                loadDashboard();
+              })
+              .catch(function (err) {
+                setFeedback(actionFeedback, "is-error", err.message || "Falha ao excluir registro.");
+              });
+          }
+        });
+
+        closeModalBtn.addEventListener("click", function () {
+          modal.classList.remove("is-open");
+        });
+
+        modal.addEventListener("click", function (event) {
+          if (event.target === modal) {
+            modal.classList.remove("is-open");
+          }
+        });
+
+        loadDashboard();
+      })();
+    </script>
+  </body>
+</html>
