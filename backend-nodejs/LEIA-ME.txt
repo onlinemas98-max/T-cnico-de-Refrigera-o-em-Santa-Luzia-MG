@@ -1,0 +1,15 @@
+Como executar o site completo com formulários e painel administrativo no seu computador ou servidor:
+
+1. Extraia TODO o arquivo ZIP para uma pasta (não execute direto de dentro do WinRAR).
+2. Instale o Node.js (versão 18 ou superior).
+3. Abra o terminal / Prompt de Comando dentro da pasta `backend-nodejs/`.
+4. Execute:
+   npm install
+   npm start
+5. Acesse no navegador:
+   - Site: http://localhost:3000/
+   - Painel Administrativo: http://localhost:3000/ADMINISTRA%C3%87%C3%83O/admin-leads.htm
+
+Importante:
+- Se abrir o arquivo `admin-leads.htm` direto pelo caminho `file:///...` no computador sem rodar o servidor acima (ou sem conectá-lo à URL de um servidor publicado), o navegador bloqueia requisições `/api/*` por não haver servidor respondendo.
+- Para publicar apenas o site estático no GitHub Pages, envie somente o conteúdo da pasta `tecnico-de-refrigeracao-santa-luzia-mg/` para o repositório e configure a URL do servidor backend conforme `INSTRUCOES-CONFIGURACAO-E-PUBLICACAO.md`.
